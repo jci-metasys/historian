@@ -1,0 +1,25 @@
+
+usage: hdf -c <command> --service <service> --host <server.com> --username <username> --password <password>
+           [--dest <destination>] [--min <minutes>] [--hrs <hours>] [--days <days>] [--month <months>]
+		   [--dbconnection <connectionString>]
+		   [/help] 
+
+These are common commands for Historical Data
+	Extract				Quick start to get 2 min of data in a CSV file 
+	Initialize (Init)	Initializes the program for data extraction
+	Incremental (Inc)	Sets the Program up to Incrementally add the data at a set interval
+
+Here is a list of the possible arguments
+	--service(s)		Comma seperated list of the service you wish to run ([Time][,Activity][,Alarm]).  Minimum of 1 service is required
+	--host				The base URL needed to connect to the Metasys server
+	--username(s)		The Metasys username for the user running the application
+	--password(p)		The Metasys password 
+	--dest(d)			The Destination the data should be saved to (Csv or SqlServer)
+	--min(m)			The number of minutes you wish to query
+	--hrs(t)			The number of hours you wish to query
+	--days(D)			The number of days you wish to query 
+	--month(M)			The number of months you wish to query
+	--dbconnection(x)	Connection string required to connect to the desired DB
+
+Using the '-help' or '--help' or '/help' pulls up this usage information.  For a quick start copy and paste the top command line without any additional 
+arguments into your command line and replace the fields with your information to get q quick view into your data.
