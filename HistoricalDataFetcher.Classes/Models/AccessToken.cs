@@ -9,12 +9,12 @@ namespace HistoricalDataFetcher.Classes.Models
         /// <summary>
         /// Access Token string
         /// </summary>
-        [JsonProperty(PropertyName = "access_token")]
+        [JsonProperty(PropertyName = "accessToken")]
         public string Access_Token { get; set; }
         /// <summary>
         /// Date the Acces Token expires
         /// </summary>
-        [JsonProperty(PropertyName = ".expires")]
+        [JsonProperty(PropertyName = "expires")]
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime Expires { get; set; }
         /// <summary>

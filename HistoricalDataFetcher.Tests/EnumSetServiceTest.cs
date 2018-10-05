@@ -32,7 +32,7 @@ namespace HistoricalDataFetcher.Tests
                 .AddJsonFile(@"C:\appsettings.json", true, true)
                 .Build();
             DBDataModel.DBConnectionString = $"Server={config["dbcomputer"]};Integrated Security=false;User Id={config["dbuser"]};Password={config["dbpassword"]}";
-            ApiRequest.InitializeAsync(new NullCache(), config["username"], config["password"], config["host"]).Wait();
+            ApiRequest.InitializeAsync(new NullCache(), config["username"], config["password"], config["host"], true).Wait();
             //ApiRequest.Username = ConfigurationManager.AppSettings["username"];
             //ApiRequest.Password = ConfigurationManager.AppSettings["password"];
             _es = EnumSetService.Instance;

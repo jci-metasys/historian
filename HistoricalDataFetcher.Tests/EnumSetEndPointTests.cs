@@ -21,7 +21,7 @@ namespace HistoricalDataFetcher.Tests
                 .AddJsonFile(@"C:\appsettings.json", true, true)
                 .Build();
             DBDataModel.DBConnectionString = $"Server={config["dbcomputer"]};Integrated Security=false;User Id={config["dbuser"]};Password={config["dbpassword"]};Initial Catalog=DataExtractor";
-            ApiRequest.InitializeAsync(new NullCache(), config["username"], config["password"], config["host"]).Wait();
+            ApiRequest.InitializeAsync(new NullCache(), config["username"], config["password"], config["host"], true).Wait();
             _enumSetEndPoint = new EnumSetEndPoint();
             _edc = new EnumDescCollection
             {

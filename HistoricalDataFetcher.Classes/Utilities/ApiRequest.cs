@@ -3,9 +3,13 @@ using HistoricalDataFetcher.Classes.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -22,6 +26,13 @@ namespace HistoricalDataFetcher.Classes.Utilities
         private static ICache _cache;
         private static Timer _timer;
         private static AccessToken _accessTokenInstance;
+
+        private static bool _allowCertificateError;
+
+        private static List<X509Certificate2> ValidX509Certificates
+        {
+            get; set;
+        }
 
         public static string HttpHost
         {
@@ -47,15 +58,41 @@ namespace HistoricalDataFetcher.Classes.Utilities
         /// <param name="password">Password of the Metasys server</param>
         /// <param name="httpHost">Host of the Metasys server</param>
         /// <returns></returns>
-        public static async Task<bool> InitializeAsync(ICache cache, string username, string password, string httpHost)
+        public static async Task<bool> InitializeAsync(ICache cache, string username, string password, string httpHost, bool allowCertificateError)
         {
             _cache = cache;
             _username = username;
             _password = password;
             _httpHost = httpHost;
-            _urlBase = $"https://{_httpHost}/api";
+            _urlBase = $"https://{_httpHost}/api/v1";
+
+            _allowCertificateError = allowCertificateError;
+
+            if (!_allowCertificateError)
+                PopulateValidX509Certificates();
+            else
+                ValidX509Certificates = new List<X509Certificate2>();
 
             return await AuthenticateAsync();
+        }
+
+
+        /// <summary>
+        /// populate certificates from local certificate store
+        /// </summary>
+        private static void PopulateValidX509Certificates()
+        {
+            ValidX509Certificates = new List<X509Certificate2>();
+
+            using (var localMachineStore = new X509Store(StoreLocation.LocalMachine))
+            {
+                localMachineStore.Open(OpenFlags.ReadOnly);
+
+                foreach (var certificate in localMachineStore.Certificates)
+                {
+                    ValidX509Certificates.Add(certificate);
+                }
+            }
         }
 
         /// <summary>
@@ -88,14 +125,14 @@ namespace HistoricalDataFetcher.Classes.Utilities
 
             using (var handler = new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true,
+                ServerCertificateCustomValidationCallback = HandleCertificateError,
                 AllowAutoRedirect = false
             })
             using (var httpClient = new HttpClient(handler))
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessTokenInstance.Access_Token);
                 var response = await httpClient.GetAsync(uri);
-                
+
                 if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
                 {
                     return await RunEndpointHelperAsync(response.Headers.Location.ToString(), acceptHeader);
@@ -120,11 +157,11 @@ namespace HistoricalDataFetcher.Classes.Utilities
         {
             var body = $"{{\"username\": \"{_username}\",\"password\": \"{_password}\"}}";
 
-            var uri = new Uri($"{UrlBase}/api/authentication/login");
-    
+            var uri = new Uri($"{UrlBase}/login");
+
             using (var handler = new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+                ServerCertificateCustomValidationCallback = HandleCertificateError
             })
             using (var httpClient = new HttpClient(handler))
             {
@@ -136,6 +173,19 @@ namespace HistoricalDataFetcher.Classes.Utilities
                     return SetAuthenticationToken(JsonConvert.DeserializeObject<AccessToken>(await response.Content.ReadAsStringAsync()));
                 }
             }
+        }
+
+        private static bool HandleCertificateError(HttpRequestMessage httpRequest, X509Certificate2 x509Certificate, X509Chain x509Chain, SslPolicyErrors sslPolicyErrors)
+        {
+            if (_allowCertificateError)
+                return true;
+
+            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateNameMismatch)
+            {
+                if (ValidX509Certificates.Any(cer => cer.Thumbprint == x509Certificate.Thumbprint))
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -152,8 +202,8 @@ namespace HistoricalDataFetcher.Classes.Utilities
 
             _accessTokenInstance = token;
 
-            //Have the interval expire the token 5 minutes before the token is set to expire to ensure there is some overlap
-            var interval = (_accessTokenInstance.Expires.AddMinutes(-5) - DateTime.Now).TotalMilliseconds;
+            //Have the interval expire the token 30 seconds before the token is set to expire to ensure there is some overlap
+            var interval = (_accessTokenInstance.Expires.AddSeconds(-30) - DateTime.Now).TotalMilliseconds;
             _timer = new Timer(interval);
 
             // Hook up the Elapsed event for the timer.

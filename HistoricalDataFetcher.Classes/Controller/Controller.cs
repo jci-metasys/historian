@@ -93,7 +93,7 @@ namespace HistoricalDataFetcher.Classes.Controller
             //Initialize cache and ApiRequest class
             _cache = new CachedMemory(CachedMemory.CACHE_SIZE_NO_LIMIT, @".\data-extractor-cache.txt");
 
-            var isLoggedIn = await ApiRequest.InitializeAsync(_cache, startOptions.Username, startOptions.Password, startOptions.Host);
+            var isLoggedIn = await ApiRequest.InitializeAsync(_cache, startOptions.Username, startOptions.Password, startOptions.Host, startOptions.InvalidCertificate);
 
             if (isLoggedIn)
             {

@@ -35,7 +35,7 @@ namespace HistoricalDataFetcher.Tests
             _timeSeriesEndPoint = timeSeriesSetup.Object;
 
             var cacheMock = new Mock<ICache>();
-            ApiRequest.InitializeAsync(cacheMock.Object, "test", "password", "localhost").Wait();
+            ApiRequest.InitializeAsync(cacheMock.Object, "test", "password", "localhost", true).Wait();
         }
 
         [TestMethod]

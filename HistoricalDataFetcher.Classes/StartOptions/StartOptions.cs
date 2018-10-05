@@ -18,5 +18,8 @@ namespace HistoricalDataFetcher.Classes.StartOptions
         public string DBConnectionString { get; set; }
         [Option('f', "fqrs", HelpText = "The absolute path to the file containing the fullly qualified references")]
         public string FqrPath { get; set; }
+
+        [Option('i', "invalidcert", Default = false, HelpText = "Allow SSL certificate error in http response.")]
+        public bool InvalidCertificate { get; set; }
     }
 }

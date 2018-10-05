@@ -29,6 +29,8 @@ namespace HistoricalDataFetcher.QuickExtract
         /// <returns></returns>
         private static async Task RunOptionsAsync(QuickStartOptions opts)
         {
+            opts.InvalidCertificate = true;
+
             if (!await _con.InitApiRequestAsync(opts))
             {
                 System.Console.WriteLine(@"Could not log in: The Host, Username, and Password combination did not work, please try again!");

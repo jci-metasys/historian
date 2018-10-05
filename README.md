@@ -60,6 +60,7 @@ dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password>
      -p, --password      Required. Password for the Metasys Application
      -x, --dbconnection  Connection string required to connect to the desired DB
      -f, --fqrs          The absolute path to the file containing the fully qualified references
+     -i, --invalidcert   Allow untrusted certificate when connecting to API, default to false if not entered.
 
 ## Bulk Extraction
 
@@ -80,7 +81,7 @@ To run the Extractor app, follow these instructions:
 
 ```bash
 dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password> [--service time[,alarm]]
-[--dest sqlserver] [--dbconnection "<Database connection string>"] [--M <number of months back>] [--D <Number of Days back>]
+[--dest sqlserver] [--dbconnection "<Database connection string>"] [--month <number of months back>] [--days <Number of Days back>] [--invalidcert <true/false>]
 ```
 
 ### CLI Options For Extraction
@@ -93,6 +94,7 @@ dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password> [--
      -x, --dbconnection  Connection string required to connect to the desired DB
      -D, --days   		 (Default: 0) The number of days you wish to query
      -M, --month		 (Default: 0) The number of months you wish to query
+     -i, --invalidcert   Allow untrusted certificate when connecting to API, default to false if not entered.
 
 ## Incremental Service (Windows Service)
 
@@ -113,7 +115,7 @@ HistoricalDataFetcher.WindowsService.exe install start --autostart
     StartTime:           Earliest time this service will retrieve data from
     TimeIntervalInHours: Time interval in hours this service will run
     Destination:         The Destination the data should be saved to ({Csv} | {SqlServer})       
-
+	InvalidCertificate:  Allow untrusted certificate when connecting to API.
 
 ## Data Storage
 

@@ -20,7 +20,7 @@ namespace HistoricalDataFetcher.Tests
                 .AddJsonFile(@"C:\appsettings.json", true, true)
                 .Build();
             DBDataModel.DBConnectionString = $"Server={_config["dbcomputer"]};Integrated Security=false;User Id={_config["dbuser"]};Password={_config["dbpassword"]};Database=DataExtractor";
-            ApiRequest.InitializeAsync(new NullCache(), _config["username"], _config["password"], _config["host"]).Wait();
+            ApiRequest.InitializeAsync(new NullCache(), _config["username"], _config["password"], _config["host"], true).Wait();
         }
     }
 }
