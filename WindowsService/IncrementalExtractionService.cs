@@ -14,7 +14,6 @@ namespace HistoricalDataFetcher.WindowsService
         private JobManager _jobManager;
         private JobAndTaskService _jobAndTaskService;
         private Controller _controller;
-        private DateTime _cutOffEndTime;
 
         private readonly ILog _log;
 

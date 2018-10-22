@@ -2,6 +2,7 @@
 using HistoricalDataFetcher.DataStorage.Interfaces;
 using HistoricalDataFetcher.DataStorage.Models;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HistoricalDataFetcher.Classes.Endpoints
@@ -31,7 +32,9 @@ namespace HistoricalDataFetcher.Classes.Endpoints
         /// <returns></returns>
         public override async Task SaveDataAsync()
         {
-            throw new NotImplementedException();
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            ThreadPool.QueueUserWorkItem(_ => tcs.SetException(new NotImplementedException()));
+            await tcs.Task;
         }
 
     }

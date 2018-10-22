@@ -24,9 +24,7 @@ namespace HistoricalDataFetcher.Classes.Controller
     {
         //private List<IBaseEndPoint> _endpoints;
         private IDataStore<SamplesDataStoreModel> _timeSeriesDataStore;
-        private IDataStore<AuditDataStoreModel> _auditDataStore;
         private IDataStore<AlarmDataStoreModel> _alarmDataStore;
-        //private IDataStore<FqrGuidDataModel> _fqrGuidDataStore;
         private ICache _cache;
         private IEnumerable<FqrModel> _fqrList;
         public string SetupEnumFileName { get; set; } = "SetupEnumList.csv";
@@ -126,7 +124,6 @@ namespace HistoricalDataFetcher.Classes.Controller
                 case DestinationSaveEnum.SqlServer:
                     _timeSeriesDataStore = new TimeSeriesSaveToSqlServer();
                     _alarmDataStore = new AlarmSaveToSqlServer();
-                    //_fqrGuidDataStore = new FqrGuidSaveToSqlServer();
                     EnumSetService.Instance.DataStore = new EnumDescSaveToSqlServer();
                     break;
                 case DestinationSaveEnum.Custom:
@@ -207,9 +204,6 @@ namespace HistoricalDataFetcher.Classes.Controller
                         break;
                     case TaskTypeEnum.Alarm:
                         TaskUtilityFactory.AddTaskUtility(new TaskUtility(task, new AlarmEndPoint(_alarmDataStore), new AlarmTaskCreator()));
-                        break;
-                    case TaskTypeEnum.Audit:
-                        TaskUtilityFactory.AddTaskUtility(new TaskUtility(task, new ActivityEndPoint(_auditDataStore), new ActivityTaskCreator()));
                         break;
                 }
             }

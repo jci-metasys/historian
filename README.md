@@ -14,17 +14,17 @@ There is also a mechanism in place for you to be able to add your own data store
 
 The three apps of the Historical Data Extractor require the following prerequisites prior to running the apps:
 
-- Download and install dotnet core (https://www.microsoft.com/net/learn/get-started/windows) on the client computer that you run the app from.
+- Download and install [dotnet core](https://www.microsoft.com/net/learn/get-started/windows) on the client computer that you run the app from.
 - Clone this repository.
 - Credentials (username and password) to the *Metasys* system. We recommend a user with view-only permissions.
 - Credentials to the SQL database (for the dbconnection string for #discovery and #extraction).
 
 ## Quick Extract
 
-To run the Quick Extract app, run the command below in from the `Quick Extract` folder. The results for the last day are stored in the current directory in a new file named timeseries.csv.
+To run the Quick Extract app, run the command below in from the [HistoricalDataFetcher.QuickExtract](/HistoricalDataFetcher.QuickExtract) folder. The results for the last day are stored in the current directory in a new file named timeseries.csv.
 
 ```bash
-dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password>
+dotnet run --host <server.com> --username <Metasys Username> --password <Metasys Password>
 ```
 
 ### CLI Options For Quick Extract
@@ -46,10 +46,10 @@ To run the Discovery app, follow these instructions:
 
 1. Open the DBScripts folder and run each script, in numerical order, on your instance of SQL Server.
 2. Create a CSV file with a list of specific FQRs, with each FQR on its own line. This CSV file is used for the --fqrs CLI option.
-2. From the `Discovery` folder, run the command below. The results for the last day are stored in the current directory in a new filed named timeseries.csv.
+3. From the [HistoricalDataFetcher.Discovery](/HistoricalDataFetcher.Discovery) folder, run the command below. The results for the last day are stored in the current directory in a new filed named timeseries.csv.
 
 ```bash
-dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password>
+dotnet run --host <server.com> --username <Metasys Username> --password <Metasys Password>
 [--dbconnection "<Database connection string>"] [--fqrs "<FQR full file path>"]
 ```
 
@@ -68,7 +68,7 @@ The Extractor app creates jobs and adds tasks to the queue, then process the URL
 
 To run the Extractor app, follow these instructions:
 
-1. From the `Extraction` folder, run the command below. Jobs and tasks are created and completed.
+1. From the [HistoricalDataFetcher.Console](/HistoricalDataFetcher.Console) folder, run the command below. Jobs and tasks are created and completed.
 2. Monitor the jobs and tasks to ensure they complete successfully. The following numbers represent the status:
 
    - 0: Job Added
@@ -80,7 +80,7 @@ To run the Extractor app, follow these instructions:
    The results for the defined timeframe are stored in the defined destination (SQL Server or CSV).
 
 ```bash
-dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password> [--service time[,alarm]]
+dotnet run --host <server.com> --username <Metasys Username> --password <Metasys Password> [--service time[,alarm]]
 [--dest sqlserver] [--dbconnection "<Database connection string>"] [--month <number of months back>] [--days <Number of Days back>] [--invalidcert <true/false>]
 ```
 
@@ -92,8 +92,8 @@ dotnet run --host <server.com> --u <Metasys Username> --p <Metasys Password> [--
      -s, --service       (Default: time) Comma separated list of the service you wish to run ([Time][,Alarm]).  Minimum of 1 service is required")
      -d, --dest          (Default: SqlServer) The Destination the data should be saved to ({Csv} | {SqlServer})
      -x, --dbconnection  Connection string required to connect to the desired DB
-     -D, --days   		 (Default: 0) The number of days you wish to query
-     -M, --month		 (Default: 0) The number of months you wish to query
+     -D, --days          (Default: 0) The number of days you wish to query
+     -M, --month         (Default: 0) The number of months you wish to query
      -i, --invalidcert   Allow untrusted certificate when connecting to API, default to false if not entered.
 
 ## Incremental Service (Windows Service)
@@ -109,13 +109,13 @@ HistoricalDataFetcher.WindowsService.exe install start --autostart
 ```
 
 ### Configuration (appsettings.json)
-    
+
     Host:                Required. Base URL <server.com> of the *Metasys* Application
     Service:             (Default: time) Comma separated list of the service you wish to run ([Time][,Alarm]).  Minimum of one service is required")
     StartTime:           Earliest time this service will retrieve data from
     TimeIntervalInHours: Time interval in hours this service will run
-    Destination:         The Destination the data should be saved to ({Csv} | {SqlServer})       
-	InvalidCertificate:  Allow untrusted certificate when connecting to API.
+    Destination:         The Destination the data should be saved to ({Csv} | {SqlServer})
+    InvalidCertificate:  Allow untrusted certificate when connecting to API.
 
 ## Data Storage
 

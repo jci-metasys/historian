@@ -31,7 +31,7 @@ namespace HistoricalDataFetcher.Classes.DataLayer.Cache
             {
                 return _cache[key] as string;
             }
-            catch (Exception)
+            catch
             {
                 return string.Empty;
             }
@@ -44,7 +44,7 @@ namespace HistoricalDataFetcher.Classes.DataLayer.Cache
             {
                 return _cache[index] as string;
             }
-            catch (Exception)
+            catch
             {
                 return string.Empty;
             }
@@ -90,7 +90,7 @@ namespace HistoricalDataFetcher.Classes.DataLayer.Cache
                     InitializeCacheHelper(fileStream);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 using (var fileStream = new FileStream(defaultCacheFileFath, FileMode.OpenOrCreate))
                 {
@@ -120,7 +120,7 @@ namespace HistoricalDataFetcher.Classes.DataLayer.Cache
             {
                 this._cache = (System.Collections.Specialized.OrderedDictionary)bf.Deserialize(fileStream);
             }
-            catch (Exception ex)
+            catch
             {
                 this._cache = new System.Collections.Specialized.OrderedDictionary(0);
             }

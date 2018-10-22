@@ -1,9 +1,11 @@
 ﻿using HistoricalDataFetcher.Classes.DataLayer.Cache;
 using HistoricalDataFetcher.Classes.Models;
+using HistoricalDataFetcher.Classes.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -26,6 +28,7 @@ namespace HistoricalDataFetcher.Classes.Utilities
         private static ICache _cache;
         private static Timer _timer;
         private static AccessToken _accessTokenInstance;
+        private static Stopwatch _stopWatch;
 
         private static bool _allowCertificateError;
 
@@ -65,6 +68,7 @@ namespace HistoricalDataFetcher.Classes.Utilities
             _password = password;
             _httpHost = httpHost;
             _urlBase = $"https://{_httpHost}/api/v1";
+            _stopWatch = new Stopwatch();
 
             _allowCertificateError = allowCertificateError;
 
@@ -156,22 +160,33 @@ namespace HistoricalDataFetcher.Classes.Utilities
         private static async Task<bool> AuthenticateAsync()
         {
             var body = $"{{\"username\": \"{_username}\",\"password\": \"{_password}\"}}";
+            _stopWatch.Start();
 
-            var uri = new Uri($"{UrlBase}/login");
-
-            using (var handler = new HttpClientHandler
+            try
             {
-                ServerCertificateCustomValidationCallback = HandleCertificateError
-            })
-            using (var httpClient = new HttpClient(handler))
-            {
-                httpClient.DefaultRequestHeaders.Accept.Clear();
+                var uri = new Uri($"{UrlBase}/login");
 
-                using (var content = new StringContent(body, Encoding.UTF8, "application/json"))
-                using (var response = await httpClient.PostAsync(uri, content))
+                using (var handler = new HttpClientHandler
                 {
-                    return SetAuthenticationToken(JsonConvert.DeserializeObject<AccessToken>(await response.Content.ReadAsStringAsync()));
+                    ServerCertificateCustomValidationCallback = HandleCertificateError
+                })
+                using (var httpClient = new HttpClient(handler))
+                {
+                    httpClient.DefaultRequestHeaders.Accept.Clear();
+
+                    using (var content = new StringContent(body, Encoding.UTF8, "application/json"))
+                    using (var response = await httpClient.PostAsync(uri, content))
+                    {
+                        return SetAuthenticationToken(JsonConvert.DeserializeObject<AccessToken>(await response.Content.ReadAsStringAsync()));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _stopWatch.Stop();
+                LoggerService.LogException($"{UrlBase}/login", TimeSpan.FromMilliseconds(_stopWatch.Elapsed.TotalMilliseconds).ToString(), ex);
+                _stopWatch.Reset();
+                return false;
             }
         }
 
