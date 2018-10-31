@@ -219,6 +219,7 @@ namespace HistoricalDataFetcher.Classes.Utilities
 
             //Have the interval expire the token 30 seconds before the token is set to expire to ensure there is some overlap
             var interval = (_accessTokenInstance.Expires.AddSeconds(-30) - DateTime.Now).TotalMilliseconds;
+            interval = interval < 50000 ? 50000 : interval;  // Defaults to 50 seconds
             _timer = new Timer(interval);
 
             // Hook up the Elapsed event for the timer.
