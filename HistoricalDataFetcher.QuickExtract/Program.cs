@@ -52,7 +52,7 @@ namespace HistoricalDataFetcher.QuickExtract
 
             //Run a quick sample list
             var qsTime = new TimeSeriesQuickstartEndPoint(new TimeSeriesSaveToCsv());
-            await qsTime.RunAsync($"{ApiRequest.UrlBase}/v1/networkDevices?page=1&pageSize=10");
+            await qsTime.RunAsync($"{ApiRequest.UrlBase}/networkDevices?page=1&pageSize=10");
 
             System.Console.WriteLine("Done!");
         }
