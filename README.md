@@ -19,6 +19,10 @@ The three apps of the Historical Data Extractor require the following prerequisi
 - Credentials (username and password) to the *Metasys* system. We recommend a user with view-only permissions.
 - Credentials to the SQL database (for the dbconnection string for #discovery and #extraction).
 
+### Supported Versions
+
+The Historical Data Extractor is only supported for *Metasys* release 10.0.
+
 ## Quick Extract
 
 To run the Quick Extract app, run the command below in from the [HistoricalDataFetcher.QuickExtract](/HistoricalDataFetcher.QuickExtract) folder. The results for the last day are stored in the current directory in a new file named timeseries.csv.
