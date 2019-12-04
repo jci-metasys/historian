@@ -115,7 +115,7 @@ namespace HistoricalDataFetcher.QuickExtract
 
             foreach (var device in networkDeviceCollection)
             {
-                string url = $"{ApiRequest.UrlBase}{device.Objects}?pageSize=20";
+                string url = $"{ApiRequest.UrlBase}{device.Objects}?pageSize=200";
                 _stopWatch.Start();
 
                 try
@@ -152,7 +152,7 @@ namespace HistoricalDataFetcher.QuickExtract
 
                 try
                 {
-                    url = $"{ApiRequest.UrlBase}{pointItem.Attributes}?pageSize=20";
+                    url = $"{ApiRequest.UrlBase}{pointItem.Attributes}?pageSize=200";
                     var availableSamples = (await GetSinglePageAsync<AvailableSampleCollectionItem>(url)).ToList();
                     LoggerService.LogApiRequest(url, availableSamples.Count, TimeSpan.FromMilliseconds(_stopWatch.Elapsed.TotalMilliseconds).ToString());
                     availableSamples.ForEach(x => x.Point = pointItem);
