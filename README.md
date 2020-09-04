@@ -1,5 +1,7 @@
 # Historical Data Extractor
 
+**This sample app has been archived.** It was written against the 10.0 Metasys Server and has not yet been updated to work with newer releases. It doesn't work with the latest releases of Metasys.
+
 The Historical Data Extractor is a series of apps that extract historical data from the *Metasys* system into a data store of your choice and in a format that can be easily read by a BI tool such as Power BI or Tableau.
 
 There are three apps included in this source code:
